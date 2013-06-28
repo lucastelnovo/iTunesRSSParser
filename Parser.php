@@ -2,18 +2,18 @@
 
 class Parser {
 	
-	private $urlRssDoc; // Lista con los rss a convertir a formato iTunes
+	private $urlsRss; // Lista con los rss a convertir a formato iTunes
 	private $elementsList; // Lista en forma de strings con elemementos obligatorios
-	private $elementsMap; // Mapa con (elemento, array)
+	public $elementsMap; // Mapa con (elemento, array)
 	private $defaultInformationMap; // Mapa con (elemento, valor_default)
 	
 
-	public function __construct($urlRssDoc, $elementsList, $defaultInformationMap) {
+	public function __construct($urlsRss, $elementsList, $defaultInformationMap) {
 		
-		$this->urlRssDoc = $urlRssDoc;
+		$this->$urlsRss = $urlsRss;
 		$this->defaultInformationMap = $defaultInformationMap;
 		$this->elementsList = $elementsList;
-		$this->elementsMap = $this->createElementsMap ( $this->elementsList );
+		$this->elementsMap = $this->createElementsMap ();
 	
 	}
 	
@@ -28,14 +28,15 @@ class Parser {
 		$keys = array(); // Defino un array en el que guardo los elementos que seran las keys del mapa
 		
 		foreach ( $this->elementsList as $string ) {
-
-			$keys[] = $string; // Completo el array con todos los elementos poniendolos como keys
+			
+			$emptyArray = array ();
+			$keys[$string] = $emptyArray; // Completo el array con todos los elementos poniendolos como keys
 		
 		}
 		
-		return array_fill_keys ( $keys, $array = array () ); // A cada key le doy de valor un array vacio
-	
+		return $keys;
 	}
+	
 	
 	// Para cada documento extrae la descripcion/contenido de los elementos 
 	public function extractElements() {

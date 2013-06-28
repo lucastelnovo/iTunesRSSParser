@@ -10,19 +10,17 @@
 
 include 'Parser.php';
 
-//$miParser = new Parser($_REQUEST['urlCSS'], $elementsList, $defaultInformationMap);
-
 /*
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$source = file_get_contents("http://feeds.feedburner.com/rhbmixcloud"); 
+$url = "http://feeds.feedburner.com/rhbmixcloud";
 
 $elementsList = array("title", "description", "link");
 
 $defaultInformationMap = array();
 
-$miParser = new Parser($source, $elementsList, $defaultInformationMap);
+$miParser = new Parser($url, $elementsList, $defaultInformationMap);
 
 
 ?>
