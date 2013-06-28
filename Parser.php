@@ -1,5 +1,7 @@
 <?php
 
+include_once 'API FeedWriter/FeedWriter.php';
+
 class Parser {
 	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes
@@ -103,8 +105,43 @@ class Parser {
 		 * Para cada key, obtengo el value y para cada elemento del value (ya que es un array) escribo con la API RSS Writer
 		 */
 		
+		$feedWriter = new FeedWriter(RSS2);
 		
-		
+		// Aca obtengo un array con los nombres de los elementos
+		$nombresDeElementos = array_keys($this->elementsMap);
+
+		foreach ($nombresDeElementos as $nombreElemento) {
+			
+			// Aca obtengo el vector asociado a la key (el value) que es lo que debo escribir con la API
+			$arrayDeContenidoDeElementos = array_shift($this->elementsMap);
+			// Aca obtengo el nombre del primer elemento en el array de nombres de elementos
+			
+			foreach ($arrayDeContenidoDeElementos as $contenido){
+				
+				// TODO: Si el elemento es un item, debo hacer lo siguiente:
+//				if($nombreElemento == "item"){
+//					
+//					$newItem = $feedWriter->createNewItem();
+//					
+//					
+//					$feedWriter->addItem($newItem);
+//					
+//					}					
+					
+				$elementoCapitalized = ucfirst($nombreElemento);
+				
+				$method = "set"."$elementoCapitalized";
+				
+				$reflectionMethod = new ReflectionMethod('FeedWriter', "$method");
+				
+				$reflectionMethod->invoke($feedWriter, "$contenido");				
+				
+				}
+				
+			}	
+			
+		return $feedWriter->generateFeed();	
+
 	}
 
 }

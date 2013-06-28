@@ -22,6 +22,8 @@ $defaultInformationMap = array();
 
 $miParser = new Parser($url, $elementsList, $defaultInformationMap);
 
+$miParser->addElementsContent();
+
 
 ?>
 </body>
