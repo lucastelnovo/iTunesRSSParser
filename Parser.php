@@ -4,7 +4,7 @@ class Parser {
 	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes
 	private $elementsList; // Lista en forma de strings con elemementos obligatorios
-	public $elementsMap; // Mapa con (elemento, array)
+	private $elementsMap; // Mapa con (elemento, array)
 	private $defaultInformationMap; // Mapa con (elemento, valor_default)
 	
 
@@ -38,7 +38,7 @@ class Parser {
 		$this->newFeed .= "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\">" . "\n";
 		
 		//foreach archivo pasado a parsear
-		foreach ( $urlsRss as $url ) {
+		foreach ( $this->urlsRss as $url ) {
 			
 			//abre el channel
 			$this->newFeed .= "<channel>";
@@ -98,6 +98,12 @@ class Parser {
 	}
 
 	public function addElementsContent(){
+		
+		/* @INFO
+		 * Para cada key, obtengo el value y para cada elemento del value (ya que es un array) escribo con la API RSS Writer
+		 */
+		
+		
 		
 	}
 
