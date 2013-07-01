@@ -2,21 +2,35 @@
 
 include_once 'API FeedWriter/FeedWriter.php';
 
+/*
+ * Referencia y notas:
+ * TODO, cosas que falta implementar.
+ * TODO!, cosa importante a revisar.
+ * TODO ASK, cosa a preguntar
+ * TODO REVISAR, puede ser inconsistente.
+ * 
+ * Los jdocs por lo pronto los estamos poniendo inmediatamente debajo de los métodos, para facilitar !expandirlos. Maybe los tengamos que pasar arriba luego. No problem. No hay demasiado código.
+ * Los comments con // pueden ser borrados luego. Son de guía para poder codear y seguir el código tranqui. No son indispensables, pero backupear de ser posible para potencial manutención de código.
+ * 
+ * Falta poner los jdocs de parámetros, return, author.
+ */
+
 class Parser {
 	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes
 	private $elementsList; // Lista en forma de strings con elemementos obligatorios
 	private $elementsMap; // Mapa con (elemento, array con la info del elemento (contenidos, hijos))
 	private $defaultInformationMap; // Mapa con (elemento, valor_default)
-	
 
 	public function __construct($urlsRss, $elementsList, $defaultInformationMap) {
+		/*
+		 * Constructor. Inicializa urlsRss, defaultInformationMap, elementsList, y crea el elementsMap. 
+		 */
 		
 		$this->urlsRss = $urlsRss;
 		$this->defaultInformationMap = $defaultInformationMap;
 		$this->elementsList = $elementsList;
 		$this->elementsMap = $this->createElementsMap ();
-	
 	}
 	
 	public function createElementsMap() {
@@ -29,78 +43,68 @@ class Parser {
 		
 		// Para cada elemento de la lista de elementos, le asigno el nombre del elemento como key, y de value le asigna un array de dos keys (de nombres fijos "contents" y "sons", donde cada una tiene un array vacío.
 		foreach ( $this->elementsList as $element ) {
-			// asigno el nombre de la key según el element de la lista de elementos
-			/*HERE $elements[$element] = $elementsInfo = [$content[], $sons[]];*/
-			
-			//
-			
-			
-			
-			
-			/* Apunta todo al mismo array?
-			 * $emptyArray = array ();
-			 * $keys [$string] = $emptyArray;
-			*/
-		}
+			$elements[$element] = $elementsInfo = array($content = array(), $sons = array());
+		};
 		
-		return $keys;
+		return $elements;
 	}
 	
 	public function createValidFeed() {
-		//escupe los headers al nuevo rss
-		$this->newFeed .= "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\">" . "\n";
+		/* TODO! Maybe este sea el único método público..
+		 * Devuelve un string con el nuevo RSS válido. Puede escalarse luego a que en lugar de devolver un string, lo echoee. 
+		 */
+		
+		//escupe los headers al nuevo rss. TODO ASK Hay que chequear que no esté vacío?
+		$newFeed .= "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\">" . "\n";
 		
 		//foreach archivo pasado a parsear
 		foreach ( $this->urlsRss as $url ) {
 			
-			//abre el channel
-			$this->newFeed .= "<channel>";
-			
-			//extrae la info al mapa
-			$this->extractElementsContent ( $url );
-			
-			//escupe la info del mapa al nuevo rss
-			$this->addElementsContent ();
-			
+			//extrae la info al mapa y luego la inserta en el nuevo feed, con raiz channel
+			$this->extractAndWriteElements("channel", $newFeed, $url);
+						
 			//limpia el mapa
 			erase_values ( $this->elementsMap );
-			
-			/*
-			 * Si no quiero usar la función privada de arriba (porque puede quedar fea una auxiliar no estática), uso este foreach de abajo.
-			 *
-			 * REF: http://php.net/manual/es/control-structures.foreach.php, http://stackoverflow.com/questions/2217160/delete-all-values-from-an-array-while-keeping-keys-intact, y esto es lindo http://stackoverflow.com/questions/9568044/php-remove-empty-null-array-key-values-while-keeping-key-values-otherwise-not-e
-			 *
-			 * foreach ( $this->elementsMap as $i => $value ) {
-			 *	unset ( $array [$i] );
-			 * }
-			*/
-			
-			//cierra el channel
-			$newFeed .= "</channel>";
-			
-			//returnea el nuevo feed
-			return $newFeed;
-		}
+		}	
+		
+		//returnea el nuevo feed
+		return $newFeed;
 	}
 	
 	private function erase_values(&$myarr) {
 		/*
 		 * Borra las values de un mapa, pero conserva las keys. Función genérica.
 		 */
+		
 		$myarr = array_map ( create_function ( '$n', 'return null;' ), $myarr );
 	}
 	
-	public function extractElementsContent($url) {
-		// Para cada documento extrae la descripcion/contenido de los elementos 
+	public function extractAndWriteElements($root, $feed, $url) {
+		/* TODO revisar sintaxis ("$root" y los this.. todo, per las dudetas.)
+		 * Extrae el contenido de cada elemento de la lista y de los hijos de esos elementos, e inserta sus contenidos en el nuevo feed.
+		 */ 
 		
-
+		//abre la raiz con nombre del array, que es el elemento.
+		$feed .= "<$root>" . "\\n";
+		
 		//foreach elemento de la lista
 		foreach ( $this->elementsMap as $element ) {
 		
+			//agrega el contenido del elemento al array de contenidos del elemento, y los hijos como strings al array de hijos, y hace lo mismo para sus hijos.
+			addElementContents($this->elementsMap, $element, $url);
+			
+			//addElementSons devuelve true si agregó algún hijo al array, false si no había nada qué agregar.
+			if(addElementSons($this->elementsMap, $element, $url)){
+				extractElements($element);
+			}
 		}
-	
-		//busca el element del mapa en el archivo y agregá su contenido al array del mapa
-	
+		
+		/*TODO! write acá*/
+		
+		//cierra la raiz
+		$feed .= "\\n" . "</$root>";
+		
+		return;
 
 	//
 	
@@ -125,9 +129,22 @@ class Parser {
 	*/
 	}
 	
-	public function addElementsContent() {
+	public function addElementContents($elementsMap, $element, $url){
+		/* TODO
+		 * Agrega el contenido del elemento al array de contenidos del elemento, y los hijos como strings al array de hijos, y hace lo mismo para sus hijos.
+		 */	
+	}
+	
+	public function addElementSons(){
+		/* TODO
+		 * Agrega a los hijos de un elemento a la chanceDevuelve true si agregó algún hijo al array, false si no había nada qué agregar.
+		 */
 		
-		/* @INFO
+	}
+	
+	public function writeElements() {
+		/* TODO
+		 * @INFO
 		 * Para cada key, obtengo el value y para cada elemento del value (ya que es un array) escribo con la API RSS Writer
 		 */
 		
@@ -174,4 +191,24 @@ class Parser {
 
 }
 
+
+		/*
+		 * Para la función createValidFeed:
+		 * Si no quiero usar la función privada de arriba (porque puede quedar fea una auxiliar no estática), uso este foreach de abajo.
+		 *
+		 * REF: http://php.net/manual/es/control-structures.foreach.php, http://stackoverflow.com/questions/2217160/delete-all-values-from-an-array-while-keeping-keys-intact, y esto es lindo http://stackoverflow.com/questions/9568044/php-remove-empty-null-array-key-values-while-keeping-key-values-otherwise-not-e
+		 *
+		 * foreach ( $this->elementsMap as $i => $value ) {
+		 *	unset ( $array [$i] );
+		 * }
+		*/
+
+		/* 
+		 * Del método createElementsMap:
+		 * 
+		 * Apunta todo al mismo array?
+		 * $emptyArray = array ();
+		 * $keys [$string] = $emptyArray;
+		*/	
+		
 ?>
