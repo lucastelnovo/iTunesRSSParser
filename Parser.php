@@ -6,7 +6,7 @@ class Parser {
 	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes
 	private $elementsList; // Lista en forma de strings con elemementos obligatorios
-	private $elementsMap; // Mapa con (elemento, array)
+	private $elementsMap; // Mapa con (elemento, array con la info del elemento (contenidos, hijos))
 	private $defaultInformationMap; // Mapa con (elemento, valor_default)
 	
 
@@ -20,16 +20,27 @@ class Parser {
 	}
 	
 	public function createElementsMap() {
-		/*
-		 * Crea el mapa de elementos, con key = element y contenido = array vacío.
+		/* TODO Ver cómo pasar el array base, y crear bien los nombres de las keys y los hijos.
+		 * Crea el mapa de elementos, con key = element, elementInfo = array de dos arrays: uno con el contenido del elemento, y otro con los hijos, ambos inicializados vacíos.
 		 */
 		
-		$keys = array (); // Defino un array en el que guardo los elementos que seran las keys del mapa
+		// Defino un array en el que guardo los elementos que seran las keys del mapa
+		$elements = array ();
 		
-
-		foreach ( $this->elementsList as $string ) {
-			$emptyArray = array ();
-			$keys [$string] = $emptyArray; // Completo el array con todos los elementos poniendolos como keys
+		// Para cada elemento de la lista de elementos, le asigno el nombre del elemento como key, y de value le asigna un array de dos keys (de nombres fijos "contents" y "sons", donde cada una tiene un array vacío.
+		foreach ( $this->elementsList as $element ) {
+			// asigno el nombre de la key según el element de la lista de elementos
+			/*HERE $elements[$element] = $elementsInfo = [$content[], $sons[]];*/
+			
+			//
+			
+			
+			
+			
+			/* Apunta todo al mismo array?
+			 * $emptyArray = array ();
+			 * $keys [$string] = $emptyArray;
+			*/
 		}
 		
 		return $keys;
@@ -52,9 +63,17 @@ class Parser {
 			$this->addElementsContent ();
 			
 			//limpia el mapa
-			foreach ( array_keys ( $this->elementsMap ) as $key ) {
-				//TODO
-			}
+			erase_values ( $this->elementsMap );
+			
+			/*
+			 * Si no quiero usar la función privada de arriba (porque puede quedar fea una auxiliar no estática), uso este foreach de abajo.
+			 *
+			 * REF: http://php.net/manual/es/control-structures.foreach.php, http://stackoverflow.com/questions/2217160/delete-all-values-from-an-array-while-keeping-keys-intact, y esto es lindo http://stackoverflow.com/questions/9568044/php-remove-empty-null-array-key-values-while-keeping-key-values-otherwise-not-e
+			 *
+			 * foreach ( $this->elementsMap as $i => $value ) {
+			 *	unset ( $array [$i] );
+			 * }
+			*/
 			
 			//cierra el channel
 			$newFeed .= "</channel>";
@@ -62,6 +81,13 @@ class Parser {
 			//returnea el nuevo feed
 			return $newFeed;
 		}
+	}
+	
+	private function erase_values(&$myarr) {
+		/*
+		 * Borra las values de un mapa, pero conserva las keys. Función genérica.
+		 */
+		$myarr = array_map ( create_function ( '$n', 'return null;' ), $myarr );
 	}
 	
 	public function extractElementsContent($url) {
@@ -98,50 +124,52 @@ class Parser {
 			}
 	*/
 	}
-
-	public function addElementsContent(){
+	
+	public function addElementsContent() {
 		
 		/* @INFO
 		 * Para cada key, obtengo el value y para cada elemento del value (ya que es un array) escribo con la API RSS Writer
 		 */
 		
-		$feedWriter = new FeedWriter(RSS2);
+		$feedWriter = new FeedWriter ( RSS2 );
 		
 		// Aca obtengo un array con los nombres de los elementos
-		$nombresDeElementos = array_keys($this->elementsMap);
-
-		foreach ($nombresDeElementos as $nombreElemento) {
+		$nombresDeElementos = array_keys ( $this->elementsMap );
+		
+		foreach ( $nombresDeElementos as $nombreElemento ) {
 			
 			// Aca obtengo el vector asociado a la key (el value) que es lo que debo escribir con la API
-			$arrayDeContenidoDeElementos = array_shift($this->elementsMap);
+			$arrayDeContenidoDeElementos = array_shift ( $this->elementsMap );
 			// Aca obtengo el nombre del primer elemento en el array de nombres de elementos
 			
-			foreach ($arrayDeContenidoDeElementos as $contenido){
+
+			foreach ( $arrayDeContenidoDeElementos as $contenido ) {
 				
 				// TODO: Si el elemento es un item, debo hacer lo siguiente:
-//				if($nombreElemento == "item"){
-//					
-//					$newItem = $feedWriter->createNewItem();
-//					
-//					
-//					$feedWriter->addItem($newItem);
-//					
-//					}					
-					
-				$elementoCapitalized = ucfirst($nombreElemento);
+				//				if($nombreElemento == "item"){
+				//					
+				//					$newItem = $feedWriter->createNewItem();
+				//					
+				//					
+				//					$feedWriter->addItem($newItem);
+				//					
+				//					}					
 				
-				$method = "set"."$elementoCapitalized";
-				
-				$reflectionMethod = new ReflectionMethod('FeedWriter', "$method");
-				
-				$reflectionMethod->invoke($feedWriter, "$contenido");				
-				
-				}
-				
-			}	
-			
-		return $feedWriter->generateFeed();	
 
+				$elementoCapitalized = ucfirst ( $nombreElemento );
+				
+				$method = "set" . "$elementoCapitalized";
+				
+				$reflectionMethod = new ReflectionMethod ( 'FeedWriter', "$method" );
+				
+				$reflectionMethod->invoke ( $feedWriter, "$contenido" );
+			
+			}
+		
+		}
+		
+		return $feedWriter->generateFeed ();
+	
 	}
 
 }
