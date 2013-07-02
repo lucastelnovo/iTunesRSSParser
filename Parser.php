@@ -7,12 +7,14 @@ include_once 'API FeedWriter/FeedWriter.php';
  * TODO, cosas que falta implementar.
  * TODO!, cosa importante a revisar.
  * TODO ASK, cosa a preguntar
- * TODO REVISAR, puede ser inconsistente.
+ * TODO CHECK, puede ser inconsistente.
  * 
  * Los jdocs por lo pronto los estamos poniendo inmediatamente debajo de los métodos, para facilitar !expandirlos. Maybe los tengamos que pasar arriba luego. No problem. No hay demasiado código.
  * Los comments con // pueden ser borrados luego. Son de guía para poder codear y seguir el código tranqui. No son indispensables, pero backupear de ser posible para potencial manutención de código.
  * 
  * Falta poner los jdocs de parámetros, return, author.
+ * 
+ * Asume que $defaultElementsMap tiene elementos con contenidos y sin hijos. En todo caso, agregar code al writer.
  */
 
 class Parser {
@@ -55,34 +57,45 @@ class Parser {
 		 */
 		
 		//escupe los headers al nuevo rss. TODO ASK Hay que chequear que no esté vacío?
-		$newFeed .= "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\">" . "\n";
+		$validFeed .= "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\">" . "\n";
 		
 		//foreach archivo pasado a parsear
 		foreach ( $this->urlsRss as $url ) {
 			
-			//extrae la info al mapa y luego la inserta en el nuevo feed, con raiz channel
-			$this->extractAndWriteElements("channel", $newFeed, $url);
+			//extrae la info al mapa y luego la inserta en el nuevo feed, con raiz channel; llena con la info default la info que no esté
+			$this->extractAndWriteElements($validFeed, $url, $this->defaultElementsMap);
 						
 			//limpia el mapa
 			erase_values ( $this->elementsMap );
 		}	
 		
 		//returnea el nuevo feed
-		return $newFeed;
+		return $validFeed;
 	}
 	
 	private function erase_values(&$myarr) {
-		/*
+		/*TODO CHECK. No creo que funque, no es un map. Hay garbage collector?
 		 * Borra las values de un mapa, pero conserva las keys. Función genérica.
 		 */
 		
 		$myarr = array_map ( create_function ( '$n', 'return null;' ), $myarr );
 	}
 	
-	public function extractAndWriteElements($root, $feed, $url) {
-		/* TODO revisar sintaxis ("$root" y los this.. todo, per las dudetas.)
-		 * Extrae el contenido de cada elemento de la lista y de los hijos de esos elementos, e inserta sus contenidos en el nuevo feed.
+	public function extractAndWriteElements($feed, $url, $defaultElementsMap){
+		/* TODO! Quizá el resto de los métodos son privados..
+		 * Wrapper de la función extractAndWriteElementsInt. Crea el cursor, y la root inicial. Método por comodidad (el otro quedaría muy grande sino).
+		 */
+				
+		return $this->extractAndWriteElements("channel", $feed, $url, $defaultElementsMap, $cursorRoot = array());
+	}
+	
+	public function extractAndWriteElementsInt($root, $feed, $url, $defaultElementsMap, $cursorRoot) {
+		/* TODO CHECK sintaxis ("$root" y los this.. todo, per las dudetas.) Revisar también si cuando se pasa una variable, se pasa la dirección del array, o una copia!!
+		 * Extrae el contenido de cada elemento de la lista y de los hijos de esos elementos, e inserta sus contenidos en el nuevo feed. Devuelve el feed.
 		 */ 
+		
+		//le agrega la posición actual al cursor
+		array_push($cursorRoot, $root);
 		
 		//abre la raiz con nombre del array, que es el elemento.
 		$feed .= "<$root>" . "\\n";
@@ -91,55 +104,76 @@ class Parser {
 		foreach ( $this->elementsMap as $element ) {
 		
 			//agrega el contenido del elemento al array de contenidos del elemento, y los hijos como strings al array de hijos, y hace lo mismo para sus hijos.
-			addElementContents($this->elementsMap, $element, $url);
+			$this->addElementContents($this->elementsMap, $element, $url, $cursorRoot);
 			
 			//addElementSons devuelve true si agregó algún hijo al array, false si no había nada qué agregar.
-			if(addElementSons($this->elementsMap, $element, $url)){
-				extractElements($element);
-			}
+			if(addElementSons($this->elementsMap, $element, $url, $cursorRoot)){
+				$this->extractAndWriteElements($element, $feed, $url, $defaultElementsMap, $cursorRoot);
+			}	
 		}
 		
-		/*TODO! write acá*/
+		//después de recorrer la lista de elementos, los escribo en el feed
+		writeElements($this->elementsMap, $feed, $defaultElementsMap);
 		
 		//cierra la raiz
 		$feed .= "\\n" . "</$root>";
 		
-		return;
-
-	//
+		//el cursor "vuelve" al elemento anterior en el árbol
+		array_pop($cursorRoot);
+		
+		return $feed;
+	}
 	
+	public function addElementContents($elementsMap, $element, $url, $cursorRoot){
+		/* TODO CHECK
+		 * Agrega el contenido del elemento al array de contenidos del elemento, y los hijos como strings al array de hijos, y hace lo mismo para sus hijos.
+		 */	
+		
+		//abre el rss desde la url
+		
+		//para cada elemento del mapa de elementos
+		
+		//le pide al rss los elementos con el nombre del elemento pasado por parámetro, con el cursor como padre
+		
+		//y agrega los contenidos al array de contenidos del elemento, usando el cursor nuevamente
+	
+		
+			
 
 	/*
 			$rss = simplexml_load_file($url);
-			if($rss)
-				{
+			if($rss){
 				echo '<h1>'.$rss->channel->title.'</h1>';
 				echo '<li>'.$rss->channel->pubDate.'</li>';
 				$items = $rss->channel->item;
-				foreach($items as $item)
-				{
-			$title = $item->title;
-			$link = $item->link;
-			$published_on = $item->pubDate;
-			$description = $item->description;
-			echo '<h3><a href="'.$link.'">'.$title.'</a></h3>';
-			echo '<span>('.$published_on.')</span>';
-			echo '<p>'.$description.'</p>';
+				
+				foreach($items as $item){
+					$title = $item->title;
+					$link = $item->link;
+					$published_on = $item->pubDate;
+					$description = $item->description;
+					echo '<h3><a href="'.$link.'">'.$title.'</a></h3>';
+					echo '<span>('.$published_on.')</span>';
+					echo '<p>'.$description.'</p>';
+				}
 			}
 	*/
 	}
 	
-	public function addElementContents($elementsMap, $element, $url){
-		/* TODO
-		 * Agrega el contenido del elemento al array de contenidos del elemento, y los hijos como strings al array de hijos, y hace lo mismo para sus hijos.
-		 */	
-	}
-	
-	public function addElementSons(){
-		/* TODO
-		 * Agrega a los hijos de un elemento a la chanceDevuelve true si agregó algún hijo al array, false si no había nada qué agregar.
+	public function addElementSons($elementsMap, $element, $url, $cursorRoot){
+		/* TODO! Quedé acá. Qué hace esto, specifically?
+		 * Agrega a los hijos de un elemento al array de hijos. Devuelve true si agregó algún hijo al array, false si no había nada qué agregar.
 		 */
 		
+		//abre el rss desde la url
+		
+		//para cada hijo elemento del mapa de elementos
+		
+		//le pide al rss los elementos con el nombre del elemento pasado por parámetro, con el cursor como padre
+		
+		//
+	
+		return ; //tamaño del array
 	}
 	
 	public function writeElements() {
