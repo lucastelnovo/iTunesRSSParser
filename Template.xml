@@ -1,6 +1,30 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
 <channel>
-	<title>tit</title>
-	<description>desc</description>
-	<link>lin</link>
-	<itunes>it</itunes>
-</channel>			
+<title>X-Dance Sessions by RHB</title>
+<link>http://rhb.podomatic.com</link>
+<description>
+RHB Mixes, directo de las pistas de baile a tu Ipod o reproductor de mp3, sin comentarios, solamente musica, visite www.facebook.com/rhbdj Si te gusta lo que hago, y tenes la posibilidad podes donar a traves de Paypal. More mixes www.rhbdj.4shared.com
+</description>
+<language>es-ar</language>
+<generator>podOmatic RSS Generator</generator>
+<pubDate>Fri, 24 May 2013 11:08:47 GMT</pubDate>
+<itunes:keywords>
+anthems,bar,bass,club,dance,electro,electronic,funkyhouse,house,latin,latinhouse,mixes,music,pieza,rhb,session
+</itunes:keywords>
+<itunes:subtitle>Give it a listen!</itunes:subtitle>
+<itunes:owner>
+<itunes:name>RHB</itunes:name>
+<itunes:email>rhb@podomatic.com</itunes:email>
+</itunes:owner>
+<itunes:explicit>clean</itunes:explicit>
+<itunes:block>no</itunes:block>
+<itunes:image href="http://assets.podomatic.net/mymedia/thumb/1070195/1400x1400_497266.jpg"/>
+<itunes:author>RHB</itunes:author>
+<itunes:summary>
+RHB Mixes, directo de las pistas de baile a tu Ipod o reproductor de mp3, sin comentarios, solamente musica, visite www.facebook.com/rhbdj Si te gusta lo que hago, y tenes la posibilidad podes donar a traves de Paypal. More mixes www.rhbdj.4shared.com
+</itunes:summary>
+<itunes:category text="Music"/>
+<atom:link type="application/rss+xml" href="http://rhb.podomatic.com/rss2.xml" rel="self"/>
+</channel>	
+</rss>
+	

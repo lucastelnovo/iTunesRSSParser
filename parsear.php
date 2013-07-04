@@ -16,7 +16,7 @@ include 'Parser.php';
 
 $url = "RSSexample1.xml";
 
-$urlTemplate = "Template.xml"; // Aca va el archivo válido de iTunes desde channel
+$urlTemplate = "Template.xml"; // Aca va el archivo válido de iTunes
 
 $miParser = new Parser($url, $urlTemplate);
 

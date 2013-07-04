@@ -6,24 +6,30 @@ class Parser {
 	
 	public function __construct($urlsRss, $urlTemplate) {
 		$this->urlsRss = array($urlsRss);
-		$this->channelElementsTemplate = simplexml_load_file($urlTemplate);
+		$this->channelElementsTemplate = simplexml_load_file($urlTemplate)->channel;
 		
 		return;
 	}
 	
 	public function haceTuMagia(){
+		 
 		$validFeed = new SimpleXMLElement("<rss></rss>");
+		$domFeed = dom_import_simplexml($validFeed);
 		
 		//$validFeed->addChild(rss);
 		//$validFeed->rss->addAttribute("xmlns:atom","asd");
 		/*TODO blah*/		
 		
 		foreach ( $this->urlsRss as $url ){
+			
 			$rssSimpleXmlChannel = simplexml_load_file($url)->channel;
 			
 			//Agrega al rssSimpleXml las keys con el contenido default del template que no estén en él. y hace más magia también.
-			$validFeed->addChild($this->compareElements($rssSimpleXmlChannel));
+			$domAux = $this->compareElements($rssSimpleXmlChannel);
+			$domAux = $domFeed->ownerDocument->importNode($domAux, TRUE);
+			$domFeed->appendChild($domAux);
 		}
+		
 		
 		return $validFeed->asXML();
 	}
@@ -32,12 +38,14 @@ class Parser {
 	private function compareElements(SimpleXMLElement $channel){
 		$rssAux = new SimpleXMLElement("<channel></channel>");
 
-		foreach($this->channelElementsTemplate->children() as $element1){
-			//var_dump("$element1" . "\n");
-			//$channel['$element1'] ? $rssAux->addChild($channel['$element1']) : $rssAux->addChild($element1);
-			/*$channel->xpath(//'$element')//$element1.getName() == "" ?
-			$rssAux->addChild($channel['$element1']->getName()) :
-			$rssAux->addChild($element1) ;*/
+		foreach($this->channelElementsTemplate->children() as $child_name=>$child_node){
+			
+			$elementPresentInChannel = $channel->xpath("$child_name");
+			
+			if(!$elementPresentInChannel) // Si no existe el elemento en el RSS que me llega...
+			$rssAux->addChild($child_name, (string) $child_node[0]); // Agrego el contenido del template.
+			else
+			$rssAux->addChild($child_name, (string) $elementPresentInChannel[0]); // Si no, agrego el mismo contenido que tenia ese elemento.
 		}
 		
 		/*foreach($channel->children() as $element2){
@@ -46,7 +54,7 @@ class Parser {
 			}
 		}*/
 			
-		return '<asd></asd>'/*$rssAux*/;
+		return dom_import_simplexml($rssAux);
 	}
 
 
