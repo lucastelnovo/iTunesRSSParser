@@ -14,9 +14,9 @@ include 'Parser.php';
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$url = "RSSexample1.xml";
+$url = "http://feeds.feedburner.com/rhbmixcloud";
 
-$urlTemplate = "Template.xml"; // Aca va el archivo válido de iTunes
+$urlTemplate = "http://rhb.podomatic.com/rss2.xml"; // Aca va el archivo válido de iTunes
 
 $miParser = new Parser($url, $urlTemplate);
 

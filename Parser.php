@@ -1,24 +1,21 @@
 <?php
 
 class Parser {
+	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes.
 	private $channelElementsTemplate; // Mapa que tiene como key las rutas de los elementos que son válidos para iTunes, y como values, los valores default.	
 	
 	public function __construct($urlsRss, $urlTemplate) {
+		
 		$this->urlsRss = array($urlsRss);
 		$this->channelElementsTemplate = simplexml_load_file($urlTemplate)->channel;
-		
-		return;
+
 	}
 	
 	public function haceTuMagia(){
 		 
 		$validFeed = new SimpleXMLElement("<rss></rss>");
-		$domFeed = dom_import_simplexml($validFeed);
-		
-		//$validFeed->addChild(rss);
-		//$validFeed->rss->addAttribute("xmlns:atom","asd");
-		/*TODO blah*/		
+		$domFeed = dom_import_simplexml($validFeed);	
 		
 		foreach ( $this->urlsRss as $url ){
 			
@@ -26,7 +23,7 @@ class Parser {
 			
 			//Agrega al rssSimpleXml las keys con el contenido default del template que no estén en él. y hace más magia también.
 			$domAux = $this->compareElements($rssSimpleXmlChannel);
-			$domAux = $domFeed->ownerDocument->importNode($domAux, TRUE);
+			$domAux = $domFeed->ownerDocument->importNode($domAux, TRUE); // Esto sirve para appendear al valid feed el feed que acabo de convertir
 			$domFeed->appendChild($domAux);
 		}
 		
@@ -36,9 +33,12 @@ class Parser {
 	
 	
 	private function compareElements(SimpleXMLElement $channel){
+		
 		$rssAux = new SimpleXMLElement("<channel></channel>");
 
 		foreach($this->channelElementsTemplate->children() as $child_name=>$child_node){
+			
+			//TODO: VER PORQUE channelElementsTemplate NO TIENE LOS TAGS DE ITUNES
 			
 			$elementPresentInChannel = $channel->xpath("$child_name");
 			
