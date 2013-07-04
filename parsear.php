@@ -14,16 +14,15 @@ include 'Parser.php';
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$url = "http://feeds.feedburner.com/rhbmixcloud";
+$url = "RSSexample1.xml";
 
-$elementsList = array("title", "description", "link");
+$urlTemplate = "Template.xml"; // Aca va el archivo válido de iTunes desde channel
 
-$defaultInformationMap = array();
+$miParser = new Parser($url, $url);
 
-$miParser = new Parser($url, $elementsList, $defaultInformationMap);
+$validFeed = $miParser->haceTuMagia();
 
-$miParser->addElementsContent();
-
+var_dump($validFeed);
 
 ?>
 </body>
