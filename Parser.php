@@ -5,17 +5,17 @@ class Parser {
 	private $channelElementsTemplate; // Mapa que tiene como key las rutas de los elementos que son válidos para iTunes, y como values, los valores default.	
 	
 	public function __construct($urlsRss, $urlTemplate) {
-		$this->urlsRss = $urlsRss;
+		$this->urlsRss = array($urlsRss);
 		$this->channelElementsTemplate = simplexml_load_file($urlTemplate);
 		
 		return;
 	}
 	
 	public function haceTuMagia(){
-		$validFeed = new SimpleXMLElement();
+		$validFeed = new SimpleXMLElement("<rss></rss>");
 		
-		$validFeed->addChild(rss);
-		$validFeed->rss->addAttribute("xmlns:atom","asd");
+		//$validFeed->addChild(rss);
+		//$validFeed->rss->addAttribute("xmlns:atom","asd");
 		/*TODO blah*/		
 		
 		foreach ( $this->urlsRss as $url ){
@@ -29,20 +29,24 @@ class Parser {
 	}
 	
 	
-	private function compareElements($channel){
-		$rssAux = new SimpleXMLElement();
-		
-		foreach($this->channelElementsTemplate->children() as $element){
-			$channel->$element ? $rssAux->addChild($channel->$element) : $rssAux->addChild($element);
+	private function compareElements(SimpleXMLElement $channel){
+		$rssAux = new SimpleXMLElement("<channel></channel>");
+
+		foreach($this->channelElementsTemplate->children() as $element1){
+			//var_dump("$element1" . "\n");
+			//$channel['$element1'] ? $rssAux->addChild($channel['$element1']) : $rssAux->addChild($element1);
+			/*$channel->xpath(//'$element')//$element1.getName() == "" ?
+			$rssAux->addChild($channel['$element1']->getName()) :
+			$rssAux->addChild($element1) ;*/
 		}
 		
-		foreach($channel->children() as $element){
-			if(!$this->channelElementsTemplate->$element){
-				$rssAux->addChild($channel->$element);
+		/*foreach($channel->children() as $element2){
+			if(!$this->channelElementsTemplate->$element2){
+				$rssAux->addChild($channel->$element2);
 			}
-		}
+		}*/
 			
-		return $rssAux;
+		return '<asd></asd>'/*$rssAux*/;
 	}
 
 

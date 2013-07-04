@@ -18,7 +18,7 @@ $url = "RSSexample1.xml";
 
 $urlTemplate = "Template.xml"; // Aca va el archivo válido de iTunes desde channel
 
-$miParser = new Parser($url, $url);
+$miParser = new Parser($url, $urlTemplate);
 
 $validFeed = $miParser->haceTuMagia();
 

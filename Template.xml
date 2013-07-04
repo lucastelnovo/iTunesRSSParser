@@ -1,22 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
-
 <channel>
-	<title><![CDATA[RHB's Cloudcasts]]></title>
-	<description><![CDATA[Visit RHB's profile on MixCloud. Listen to their recent and most popular Cloudcasts. It's free and really easy to use. MixCloud to RSS converter hacked together by Andrew Weeks. http://meloncholy.com]]></description>
-	<link>http://bits.meloncholy.com/mixcloud-rss/</link>
-	<generator>NodeJS RSS Module</generator>
-	<lastBuildDate>Wed, 03 Jul 2013 13:42:20 GMT</lastBuildDate>
-	<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/rss+xml" href="http://feeds.feedburner.com/rhbmixcloud" />
-	<feedburner:info uri="rhbmixcloud" />
-	<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" />
-	<media:thumbnail url="http://www.rhbdj.com.ar/images/sf001_c.jpg" />
-	<media:keywords>RHB,rhbdj,podcast,mixcloud,soundcloud,itunes,suscribite,submit,dj,house,remix,trance,electronic,electro,club</media:keywords>
-	<media:category scheme="http://www.itunes.com/dtds/podcast-1.0.dtd">Music</media:category><itunes:owner><itunes:email>rhb.electronic.music@gmail.com</itunes:email>
-	<itunes:name>RHB</itunes:name></itunes:owner>
-	<itunes:author>RHB</itunes:author><itunes:explicit>no</itunes:explicit>
-	<itunes:image href="http://www.rhbdj.com.ar/images/sf001_c.jpg" />
-	<itunes:keywords>RHB,rhbdj,podcast,mixcloud,soundcloud,itunes,suscribite,submit,dj,house,remix,trance,electronic,electro,club</itunes:keywords>
-	<itunes:subtitle>Hot Mixes by RHB</itunes:subtitle>
-	<itunes:summary>RHB Mixes, directo de las pistas de baile a tu Ipod o reproductor de mp3, sin comentarios, solamente musica, visite www.facebook.com/rhbdj Si te gusta lo que hago, y tenes la posibilidad podes donar a traves de Paypal</itunes:summary><itunes:category text="Music" />
+	<title>tit</title>
+	<description>desc</description>
+	<link>lin</link>
+	<itunes>it</itunes>
 </channel>			
