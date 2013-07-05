@@ -14,11 +14,9 @@ include 'Parser.php';
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$url = "http://feeds.feedburner.com/rhbmixcloud";
+$urls = "RSSexample1.xml";
 
-$urlTemplate = "http://rhb.podomatic.com/rss2.xml"; // Aca va el archivo válido de iTunes
-
-$miParser = new Parser($url, $urlTemplate);
+$miParser = new Parser($urls);
 
 $validFeed = $miParser->haceTuMagia();
 
