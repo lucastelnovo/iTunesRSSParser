@@ -20,7 +20,7 @@ $miParser = new Parser($urls);
 
 $validFeed = $miParser->haceTuMagia();
 
-var_dump($validFeed);
+echo "$validFeed";
 
 ?>
 </body>
