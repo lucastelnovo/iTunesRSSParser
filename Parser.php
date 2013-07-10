@@ -22,28 +22,36 @@ class Parser {
 		
 		foreach ( $this->urlsRss as $url ) {
 			
-			$rssSimpleXmlChannel = simplexml_load_file ( $url )->channel;
+			$text = file_get_contents($url);
+
+			$url_modified = $this->changeDocTags($text, "<itunes:", "<itunes-");
+			$url_modified = $this->changeDocTags($url_modified, "</itunes:", "</itunes-");
+			
+			$rssSimpleXmlChannel = new SimpleXMLElement($url_modified);
+			
+			$rssSimpleXmlChannel = $rssSimpleXmlChannel->channel;			
 			
 			//Agrega al rssSimpleXml las keys con el contenido default del template que no est�n en �l. y hace m�s magia tambi�n.
-			$domAux = $this->compareElements ( $rssSimpleXmlChannel, $this->channelElementsTemplate );
-			$iTunesTags = $this->agregarTagsiTunes ( $rssSimpleXmlChannel );
+			$domHeader = $this->compareElements ( $rssSimpleXmlChannel, $this->channelElementsTemplate );
 			
-			foreach ( $iTunesTags->children () as $iTunesElementName => $iTunesElementNode ) {
-				
-				$domAux->addChild ( $iTunesElementName, ( string ) $iTunesElementNode [0] );
-				$cant = count ( $iTunesElementNode );
-				
-				if ($cant > 0) { // Si el nodo tiene hijos..			
-					foreach ( $iTunesElementNode as $subhijos_name => $subhijos_node ) {
-						$domAux->$iTunesElementName->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
-					}
-				}
+			$dom = dom_import_simplexml ( $domHeader );
+			$domHeader = $domFeed->ownerDocument->importNode ( $dom, TRUE ); // Esto sirve para appendear al valid feed el feed que acabo de convertir			
+			$domFeed->appendChild ( $domHeader );
 			
-			}
 			
-			$dom = dom_import_simplexml ( $domAux );
-			$domAux = $domFeed->ownerDocument->importNode ( $dom, TRUE ); // Esto sirve para appendear al valid feed el feed que acabo de convertir			
-			$domFeed->appendChild ( $domAux );
+			//Agrego los items.
+// 			foreach($rssSimpleXmlChannel->item as $item => $itemNode){
+// 				$xmlItem = $this->compareElements( $itemNode, $this->itemElementsTemplate);
+			
+// 				$domItem = dom_import_simplexml ( $xmlItem );
+			
+// 				$domItem = $domAux->ownerDocument->importNode ( $domItem, TRUE );
+// 				$domAux->appendChild ( $domItemAux );
+			
+			
+// 			}
+			
+			
 		
 		//			foreach($rssSimpleXmlChannel->item as $item){
 		//				$domItemAux = $this->compareElements();
@@ -58,25 +66,24 @@ class Parser {
 		$rootName = $elementToCompare->getName ();
 		$rssAux = new SimpleXMLElement ( "<" . $rootName . "></" . $rootName . ">" );
 		$children = $template->children ();
-		$ns = "";
-		
-		if ($rootName == "itunes") {
-			$children = $template;
-			$ns = "itunes";
-		}
 		
 		foreach ( $children as $child_name => $child_node ) {
 			
 			$elementPresentInChannel = $elementToCompare->xpath ( "$child_name" );
+
+			if($child_name == "itunes-image"){ // Porque este tag en "unario"
+				$this->handleImageElement($child_node, $elementPresentInChannel, $rssAux);
+				continue;
+			}
 			
 			$cant = count ( $child_node ); // En esta variable cuento la cantidad de elementos del nodo (para ver si tiene hijos)
 			
-
-			$element = $this->addChildren ( $rssAux, $elementPresentInChannel, $child_node, $ns );
+			$element = $this->addChildren ( $rssAux, $elementPresentInChannel, $child_node);
 			
 			if ($cant > 0) { // Si el nodo tiene hijos..			
 				foreach ( $child_node as $subhijos_name => $subhijos_node ) {
-					$element->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
+					$elementPresentInSon = $elementToCompare->$child_name->xpath ( "$subhijos_name" );
+					$this->addChildren ( $rssAux->$child_name, $elementPresentInSon, $subhijos_node);
 				}
 			}
 		
@@ -85,19 +92,19 @@ class Parser {
 		return $rssAux;
 	}
 	
-	private function addChildren($rssAux, $elementPresentInChannel, $child_node, $namespace) {
+	private function addChildren($elementToAddChild, $elementPresentInChannel, $child_node) {
 		
 		$child_name = $child_node->getName ();
 		
 		if (! $elementPresentInChannel) { // Si no existe el elemento en el RSS que me llega...
 			
 
-			$element = $rssAux->addChild ( $namespace . $child_name, ( string ) $child_node [0] ); // Agrego el contenido del template.
+			$element = $elementToAddChild->addChild ( $child_name, ( string ) $child_node [0] ); // Agrego el contenido del template.
 		
 
 		} else {
 			
-			$element = $rssAux->addChild ( $namespace . $child_name, ( string ) $elementPresentInChannel [0] ); // Si no, agrego el mismo contenido que tenia ese elemento.
+			$element = $elementToAddChild->addChild ( $child_name, ( string ) $elementPresentInChannel [0] ); // Si no, agrego el mismo contenido que tenia ese elemento.
 		
 
 		}
@@ -105,16 +112,32 @@ class Parser {
 		return $element;
 	}
 	
-	public function agregarTagsiTunes(SimpleXMLElement $channel) {
+	private function changeDocTags($text, $search, $replace){
 		
-		$iTunesNamespaceElements = $this->channelElementsTemplate->children ( "http://www.itunes.com/dtds/podcast-1.0.dtd" );
+		$changedText = str_replace($search, $replace, $text);
 		
-		$iTunesAux = new SimpleXMLElement ( "<itunes></itunes>" );
+		return $changedText;
 		
-		$iTunesAux->addChild ( $channel->getName () );
-		
-		return $this->compareElements ( $iTunesAux, $iTunesNamespaceElements );
+	} 
 	
+	private function handleImageElement(SimpleXMLElement $child_node, $elementPresentInChannel, SimpleXMLElement $elementToAddChild){
+		
+		$child_name = $child_node->getName ();
+		
+		if (! $elementPresentInChannel) { // Si no existe el elemento en el RSS que me llega...
+				
+			$child = $elementToAddChild->addChild ( $child_name ); // Agrego el contenido del template.
+			$child->addAttribute("href", "http://images.apple.com/pr/images/rotation/leopardbox.jpg");
+			
+		
+		
+		} else {
+			
+			$child = $elementToAddChild->addChild ( $child_name ); // Agrego el contenido del template.		
+			$child->addAttribute("href", $elementPresentInChannel[0]->attributes());
+		
+		}		
+		
 	}
 	
 /*

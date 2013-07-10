@@ -4,21 +4,21 @@
         <title>RSS with the best</title>
         <link>http://www.apple.com/</link>
         <language>en-us</language>
-        <copyright>℗ &amp; © 2008 Apple</copyright>
-        <itunes:subtitle>A podcast series on RSS</itunes:subtitle>
-        <itunes:author>Jane Doe</itunes:author>
-        <itunes:summary>Creating a well formed RSS feed is important for
+        <copyright>Apple</copyright>
+        <itunes-subtitle>A podcast series on RSS</itunes-subtitle>
+        <itunes-author>Jane Doe</itunes-author>
+        <itunes-summary>Creating a well formed RSS feed is important for
         iTunes U. This weekly series follows the methods to ensure your
-        success.</itunes:summary>
+        success.</itunes-summary>
         <description>Creating a well formed RSS feed is important for
         iTunes U. This weekly series follows the methods to ensure your
         success.</description>
-        <itunes:owner>
-            <itunes:name>Jane Doe</itunes:name>
-            <itunes:email>jdoe@example.com</itunes:email>
-        </itunes:owner>
-        <itunes:image href="http://images.apple.com/pr/images/rotation
+        <itunes-owner>
+            <itunes-name>Jane Doe</itunes-name>
+            <itunes-email>jdoe@example.com</itunes-email>
+        </itunes-owner>
+        <itunes-image href="http://images.apple.com/pr/images/rotation
         /leopardbox.jpg"/>
-        <itunes:explicit>no</itunes:explicit>
+        <itunes-explicit>no</itunes-explicit>
         </channel>
 </rss>

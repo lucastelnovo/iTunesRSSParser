@@ -14,7 +14,7 @@ include 'Parser.php';
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$urls = "RSSexample1.xml";
+$urls = "http://feeds.feedburner.com/rhbmixcloud";
 
 $miParser = new Parser($urls);
 
