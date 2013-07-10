@@ -3,7 +3,7 @@
 class Parser {
 	
 	private $urlsRss; // Lista con los rss a convertir a formato iTunes.
-	private $channelElementsTemplate; // Mapa que tiene como key las rutas de los elementos que son válidos para iTunes, y como values, los valores default.	
+	private $channelElementsTemplate; // Mapa que tiene como key las rutas de los elementos que son vï¿½lidos para iTunes, y como values, los valores default.	
 	private $itemElementsTemplate; //capo
 	private $validFeed;
 	
@@ -24,7 +24,7 @@ class Parser {
 			
 			$rssSimpleXmlChannel = simplexml_load_file ( $url )->channel;
 			
-			//Agrega al rssSimpleXml las keys con el contenido default del template que no estén en él. y hace más magia también.
+			//Agrega al rssSimpleXml las keys con el contenido default del template que no estï¿½n en ï¿½l. y hace mï¿½s magia tambiï¿½n.
 			$domAux = $this->compareElements ( $rssSimpleXmlChannel, $this->channelElementsTemplate );
 			$iTunesTags = $this->agregarTagsiTunes ( $rssSimpleXmlChannel );
 			
@@ -35,7 +35,7 @@ class Parser {
 				
 				if ($cant > 0) { // Si el nodo tiene hijos..			
 					foreach ( $iTunesElementNode as $subhijos_name => $subhijos_node ) {
-						$iTunesElementNode->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
+						$domAux->iTunesElementNode->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
 					}
 				}
 			
@@ -58,6 +58,7 @@ class Parser {
 		$rootName = $elementToCompare->getName ();
 		$rssAux = new SimpleXMLElement ( "<" . $rootName . "></" . $rootName . ">" );
 		$children = $template->children ();
+		$ns = "";
 		
 		if ($rootName == "itunes") {
 			$children = $template;
