@@ -35,7 +35,7 @@ class Parser {
 				
 				if ($cant > 0) { // Si el nodo tiene hijos..			
 					foreach ( $iTunesElementNode as $subhijos_name => $subhijos_node ) {
-						$domAux->iTunesElementNode->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
+						$domAux->$iTunesElementName->addChild ( $subhijos_name, ( string ) $subhijos_node [0] );
 					}
 				}
 			
