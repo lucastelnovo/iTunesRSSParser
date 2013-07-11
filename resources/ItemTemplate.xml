@@ -1,17 +1,17 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<rss xmlns-atom="http-//www.w3.org/2005/Atom" xmlns-wfw="http-//wellformedweb.org/CommentAPI/" xmlns-dc="http-//purl.org/dc/elements/1.1/" xmlns-dcterms="http-//purl.org/dc/terms/" xmlns-content="http-//purl.org/rss/1.0/modules/content/" xmlns-itunes="http-//www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
  <item>
             <title>XML Basics</title>
-            <itunes:author>Jane Doe</itunes:author>
-            <itunes:subtitle>A short primer on RSS and XML</itunes:subtitle>
-            <itunes:summary>The basics of RSS is XML.  This episode will
+            <itunes-author>Jane Doe</itunes-author>
+            <itunes-subtitle>A short primer on RSS and XML</itunes-subtitle>
+            <itunes-summary>The basics of RSS is XML.  This episode will
             assist in the development of the RSS shell used for iTunes U 
-            RSS feeds.</itunes:summary>
-            <enclosure url="http://example.com/podcasts/RSS-Basics.m4a"
+            RSS feeds.</itunes-summary>
+            <enclosure url="http-//example.com/podcasts/RSS-Basics.m4a"
             length="234233" type="audio/x-m4a"/>
-            <guid>http://example.com/podcasts/RSS-Basics.m4a</guid>
-            <pubDate>Tue, 17 Jun 2008 19:00:00 GMT</pubDate>
-            <itunes:duration>7:04</itunes:duration>
-            <itunes:keywords>rss, itunesu, xml, tutorial,
-            training</itunes:keywords>
+            <guid>http-//example.com/podcasts/RSS-Basics.m4a</guid>
+            <pubDate>Tue, 17 Jun 2008 19-00-00 GMT</pubDate>
+            <itunes-duration>7-04</itunes-duration>
+            <itunes-keywords>rss, itunesu, xml, tutorial,
+            training</itunes-keywords>
         </item>
 </rss>

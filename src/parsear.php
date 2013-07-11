@@ -6,19 +6,21 @@
 </head>
 
 <body>
-<?php 
+<?php
 
-include '../Parser.php.php';
+include 'Parser.php';
 
 /*
  * VA HARDCODEADO PARA TESTEAR
  */
 
-$urls = array($_REQUEST['url1'], $_REQUEST['url2'], $_REQUEST['url3']); 
+// $urls = array($_REQUEST['url1'], $_REQUEST['url2'], $_REQUEST['url3']);
 
-$miParser = new Parser($urls);
+$urls = array("http://feeds.feedburner.com/rhbmixcloud");
 
-$validFeed = $miParser->haceTuMagia();
+$miParser = new Parser ( $urls );
+
+$validFeed = $miParser->haceTuMagia ();
 
 echo "$validFeed";
 
