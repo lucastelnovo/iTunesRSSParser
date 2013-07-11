@@ -12,7 +12,7 @@ class Parser {
 		$this->urlsRss = $urlsRss;
 		$this->channelElementsTemplate = simplexml_load_file ( "../resources/HeaderTemplate.xml" )->channel;
 		$this->itemElementsTemplate = simplexml_load_file ( "../resources/ItemTemplate.xml" )->item;
-		$this->validFeed = new SimpleXMLElement ( "<rss></rss>" );
+		$this->validFeed = new SimpleXMLElement ( "<rss xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" xmlns:itunesu=\"http://www.itunesu.com/feed\" version=\"2.0\"></rss>" );
 	
 	}
 	
@@ -57,7 +57,13 @@ class Parser {
 		
 		}
 		
-		return $this->validFeed->asXML ();
+		$unicornio = $this->validFeed->asXML ();
+		
+		$unicornio = $this->changeDocTags ( $unicornio, "<itunes-", "<itunes:" );
+		$unicornio = $this->changeDocTags ( $unicornio, "</itunes-", "</itunes:" );
+		$unicornio = $this->changeDocTags($unicornio, "<guid", "<guid isPermaLink=\"false\"");
+		
+		return $unicornio;
 	}
 	
 	private function compareElements(SimpleXMLElement $elementToCompare, SimpleXMLElement $template) {
@@ -73,7 +79,7 @@ class Parser {
 			if ($child_name == "itunes-image") { // Porque este tag en "unario"
 				$this->handleImageElement ( $child_node, $elementPresentInChannel, $rssAux );
 				continue;
-			} elseif ($child_name == "itunes-enclosure") {
+			} elseif ($child_name == "enclosure") {
 				$this->handleEnclosureElement ( $child_node, $elementPresentInChannel, $rssAux );
 				continue;
 			}
@@ -144,18 +150,28 @@ class Parser {
 	}
 	
 	private function handleEnclosureElement(SimpleXMLElement $child_node, $elementPresentInChannel, SimpleXMLElement $elementToAddChild) {
-		// TODO
+		
 		$child_name = $child_node->getName ();
 		
 		if (! $elementPresentInChannel) {
 			
 			$child = $elementToAddChild->addChild ( $child_name );
-			$child->addAttribute ( "href", "http://images.apple.com/pr/images/rotation/leopardbox.jpg" );
+			$child->addAttribute ( "url", "http://example.com/podcasts/RSS-Basics.m4a" );
+			$child->addAttribute ( "length", "1" );
+			$child->addAttribute ( "type", "audio/x-m4a" );
 		
 		} else {
 			
 			$child = $elementToAddChild->addChild ( $child_name );
-			$child->addAttribute ( "href", $elementPresentInChannel [0]->attributes () );
+			$atributos = $elementPresentInChannel [0]->attributes ();
+			
+			$child->addAttribute ( "url", $atributos ['url'] );
+			$child->addAttribute ( "type", $atributos ['type'] );
+			
+			if($atributos['lenght'] == "")
+				$child->addAttribute ( "length", "1" );
+			else			
+			$child->addAttribute ( "length", $atributos ['lenght'] );
 		
 		}
 	

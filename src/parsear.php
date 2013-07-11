@@ -10,19 +10,18 @@
 
 include 'Parser.php';
 
-/*
- * VA HARDCODEADO PARA TESTEAR
- */
-
 // $urls = array($_REQUEST['url1'], $_REQUEST['url2'], $_REQUEST['url3']);
 
-$urls = array("http://feeds.feedburner.com/rhbmixcloud");
+//HARDCODED
+$urls = array("http://feeds.feedburner.com/rhbmixcloud", "http://feeds.feedburner.com/rhbyoutube", "http://feeds.feedburner.com/remembergroovesivoox");
 
 $miParser = new Parser ( $urls );
 
 $validFeed = $miParser->haceTuMagia ();
 
-echo "$validFeed";
+echo $validFeed;
+
+// header("Location: show.php?=$validFeed");
 
 ?>
 </body>
