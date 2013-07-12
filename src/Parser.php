@@ -24,8 +24,12 @@ class Parser {
 			
 			$text = file_get_contents ( $url );
 			
+			//Cambio tags de iTunes para poder manejarlos sin ns.
 			$url_modified = $this->changeDocTags ( $text, "<itunes:", "<itunes-" );
 			$url_modified = $this->changeDocTags ( $url_modified, "</itunes:", "</itunes-" );
+			
+			//Cambio los & por AMPERSAND para que no rompa.
+			$url_modified = $this->changeDocTags ( $url_modified, "&", "AMPERSAND" );
 			
 			$rssSimpleXmlChannel = new SimpleXMLElement ( $url_modified );
 			
@@ -62,6 +66,7 @@ class Parser {
 		$unicornio = $this->changeDocTags ( $unicornio, "<itunes-", "<itunes:" );
 		$unicornio = $this->changeDocTags ( $unicornio, "</itunes-", "</itunes:" );
 		$unicornio = $this->changeDocTags($unicornio, "<guid", "<guid isPermaLink=\"false\"");
+		$unicornio = $this->changeDocTags ( $url_modified, "AMPERSAND", "&"  );
 		
 		return $unicornio;
 	}
@@ -117,6 +122,7 @@ class Parser {
 		} else {
 			
 			// Si no, agrego el mismo contenido que tenia el elemento.
+			//$element->child_name = $elementPresentInChannel [0];
 			$element = $elementToAddChild->addChild ( $child_name, ( string ) $elementPresentInChannel [0] );
 		}
 		
