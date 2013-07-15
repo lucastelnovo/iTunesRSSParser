@@ -6,22 +6,28 @@
 </head>
 
 <body>
+
+	<p>Procesando su XML, por favor espere...</p>
+
 <?php
 
+include 'Auxiliar.php';
 include 'Parser.php';
 
 // $urls = array($_REQUEST['url1'], $_REQUEST['url2'], $_REQUEST['url3']);
 
-//HARDCODED
-$urls = array("http://feeds.feedburner.com/rhbmixcloud", "http://feeds.feedburner.com/rhbyoutube", "http://feeds.feedburner.com/remembergroovesivoox");
+// HARDCODED
+$urls = array ("http://feeds.feedburner.com/rhbmixcloud", "http://feeds.feedburner.com/rhbyoutube", "http://feeds.feedburner.com/remembergroovesivoox" );
 
 $miParser = new Parser ( $urls );
 
 $validFeed = $miParser->haceTuMagia ();
 
-echo $validFeed;
+$aux = new Auxiliar ( "../iTunesValidFeed.xml" );
+$aux->devolverXML ( $validFeed );
 
-// header("Location: show.php?=$validFeed");
+echo "Procesando su XML...";
+header ( "Location: http://../iTunesValidFeed.xml" );
 
 ?>
 </body>
