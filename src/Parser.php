@@ -42,6 +42,7 @@ class Parser {
 			
 			//Cambio los & por AMPERSAND para que no rompa.
 			$url_modified = $this->changeDocTags ( $url_modified, "&", "AMPERSAND" );
+			$url_modified = $this->changeDocTags ( $url_modified, "&amp;", "AMPERSAND" );
 			
 			$rssSimpleXmlChannel = new SimpleXMLElement ( $url_modified );
 			
@@ -69,7 +70,7 @@ class Parser {
 		$unicornio = $this->changeDocTags ( $unicornio, "<itunes-", "<itunes:" );
 		$unicornio = $this->changeDocTags ( $unicornio, "</itunes-", "</itunes:" );
 		$unicornio = $this->changeDocTags ( $unicornio, "<guid", "<guid isPermaLink=\"false\"");
-		$unicornio = $this->changeDocTags ( $unicornio, "AMPERSAND", "&amp;"  );
+		$unicornio = $this->changeDocTags ( $unicornio, "AMPERSAND", "&#38;"  );
 		
 		return $unicornio;
 	}
