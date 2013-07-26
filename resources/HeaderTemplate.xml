@@ -2,19 +2,31 @@
 <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
 	xmlns:itunesu="http://www.itunesu.com/feed" version="2.0">
 	<channel>
-		<title>TITLE</title>
-		<link>LINK</link>
-		<language>en-us</language>
+		<title>X-Dance Sessions by RHB</title>
+		<link>http://rhb.podomatic.com</link>
+		<description>RHB Mixes, directo de las pistas de baile a tu Ipod o
+			reproductor de mp3, sin comentarios, solamente musica, visite
+			www.facebook.com/rhbdj Si te gusta lo que hago, y tenes la
+			posibilidad podes donar a traves de Paypal. More mixes
+			www.rhbdj.4shared.com</description>
+		<language>es-ar</language>
 		<copyright>COPYRIGHT</copyright>
-		<itunes-subtitle>SUBTITLE</itunes-subtitle>
-		<itunes-author>AUTHOR</itunes-author>
-		<itunes-summary>SUMMARY</itunes-summary>
-		<description>DESCRIPTION</description>
+		<itunes-subtitle>Give it a listen!</itunes-subtitle>
+		<itunes-author>RHB</itunes-author>
 		<itunes-owner>
-			<itunes-name>NAME</itunes-name>
-			<itunes-email>my@email.com</itunes-email>
+			<itunes-name>RHB</itunes-name>
+			<itunes-email>rhb@podomatic.com</itunes-email>
 		</itunes-owner>
-		<itunes-image href="http://about:blank" />
-		<itunes-explicit>no</itunes-explicit>
+		<itunes:block>no</itunes:block>
+		<itunes-image
+			href="http://assets.podomatic.net/mymedia/thumb/1070195/1400x1400_497266.jpg" />
+		<itunes:summary>
+			RHB Mixes, directo de las pistas de baile a tu Ipod o reproductor de
+			mp3, sin comentarios, solamente musica, visite www.facebook.com/rhbdj
+			Si te gusta lo que hago, y tenes la posibilidad podes donar a traves
+			de Paypal. More mixes www.rhbdj.4shared.com
+		</itunes:summary>
+		<itunes-explicit>clean</itunes-explicit>
+		<itunes:category text="Music" />
 	</channel>
 </rss>

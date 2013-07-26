@@ -11,13 +11,11 @@ class Auxiliar {
 	
 	public function devolverXML($unXML) {
 		
-		if (! file_exists ( $this->path )) {
-			$handle = fopen ( $this->path, "x" );
-			fwrite ( $handle, $unXML );
-		} else {
-			fwrite ( $this->path, $unXML );
-		}
-	
+		if (file_exists ( $this->path ))
+			unlink($this->path);
+		
+		$handle = fopen ( $this->path, "x" );
+		fwrite ( $handle, $unXML );	
 	}
 
 }

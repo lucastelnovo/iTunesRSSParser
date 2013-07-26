@@ -20,6 +20,18 @@ class Parser {
 		
 		$domFeed = dom_import_simplexml ( $this->validFeed );
 		
+		// Agrega al rssSimpleXml las keys con el contenido default del
+		// template que no est�n en �l. y hace m�s magia tambi�n.
+		$domHeader = $this->channelElementsTemplate;
+		$dom = dom_import_simplexml ( $domHeader );
+			/*
+			 * Esto sirve para appendear al valid feed el nodo que acabo de
+			 * convertir
+			 */
+			
+		$domHeader = $domFeed->ownerDocument->importNode ( $dom, TRUE );
+		$domFeed->appendChild ( $domHeader );
+
 		foreach ( $this->urlsRss as $url ) {
 			
 			$text = file_get_contents ( $url );
@@ -35,17 +47,8 @@ class Parser {
 			
 			$rssSimpleXmlChannel = $rssSimpleXmlChannel->channel;
 			
-			// Agrega al rssSimpleXml las keys con el contenido default del
-			// template que no est�n en �l. y hace m�s magia tambi�n.
-			$domHeader = $this->compareElements ( $rssSimpleXmlChannel, $this->channelElementsTemplate );
 			
-			$dom = dom_import_simplexml ( $domHeader );
-			/*
-			 * Esto sirve para appendear al valid feed el nodo que acabo de
-			 * convertir
-			 */
 			
-			$domHeader = $domFeed->ownerDocument->importNode ( $dom, TRUE );
 			
 			// Agrego los items.
 			foreach ( $rssSimpleXmlChannel->item as $item => $itemNode ) {
@@ -53,11 +56,11 @@ class Parser {
 				
 				$domI = dom_import_simplexml ( $xmlItem );
 				$domItem = $domHeader->ownerDocument->importNode ( $domI, TRUE );
+				// Al domheader debo pedirle el channel para que lo appendee bien.
 				$domHeader->appendChild ( $domItem );
 			
 			}
 			
-			$domFeed->appendChild ( $domHeader );
 		
 		}
 		
@@ -65,8 +68,8 @@ class Parser {
 		
 		$unicornio = $this->changeDocTags ( $unicornio, "<itunes-", "<itunes:" );
 		$unicornio = $this->changeDocTags ( $unicornio, "</itunes-", "</itunes:" );
-		$unicornio = $this->changeDocTags($unicornio, "<guid", "<guid isPermaLink=\"false\"");
-		$unicornio = $this->changeDocTags ( $url_modified, "AMPERSAND", "&"  );
+		$unicornio = $this->changeDocTags ( $unicornio, "<guid", "<guid isPermaLink=\"false\"");
+		$unicornio = $this->changeDocTags ( $unicornio, "AMPERSAND", "&amp;"  );
 		
 		return $unicornio;
 	}
